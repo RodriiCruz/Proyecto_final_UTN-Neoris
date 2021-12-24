@@ -61,8 +61,7 @@ public class Main {
             log.info("Se creó el archivo " + output.toAbsolutePath());
 
             try {
-
-                ServicioBuscador servicio = new ServicioBuscador(csvTuristas, csvSitios, output, eleccion);
+                ServicioBuscador servicio = new ServicioBuscador(brTuristas, brSitios, output, eleccion);
 
                 if (eleccion.equals("intereses")) {
                     servicio.buscarSitios();
