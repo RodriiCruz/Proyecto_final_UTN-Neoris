@@ -23,6 +23,8 @@ public class ServicioTurista {
 
         while ((lineaCsv = turistaCsv.readLine()) != null) {
             String[] aux = lineaCsv.split(",");
+            
+            String[] auxInteres = aux[5].split(";");
 
             if (aux[0].equals("Nro_Documento")) {
                 continue;
@@ -35,7 +37,7 @@ public class ServicioTurista {
                 turista.setSexo(aux[1].charAt(0));
                 turista.setApellido(aux[2]);
                 turista.setNombre(aux[3]);
-                turista.setInteres(aux[5]);
+                turista.setIntereses(Arrays.asList(auxInteres));
                 turista.setLatitud(Double.valueOf(aux[6]));
                 turista.setLongitud(Double.valueOf(aux[7]));
                 turista.setHoraDeConsulta(Integer.valueOf(aux[8]));

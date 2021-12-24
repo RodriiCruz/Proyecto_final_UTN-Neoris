@@ -6,6 +6,7 @@ import ar.edu.utn.buscador.utilidades.OrdenarPorDistancia;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
@@ -18,11 +19,16 @@ import org.slf4j.LoggerFactory;
 public class ServicioBuscador {
 
     final static Logger log = LoggerFactory.getLogger(ServicioBuscador.class);
+    final Double distanciaMaxima = 100.00;
 
     private ServicioTurista st;
     private ServicioSitio ss;
     private List<Turista> turistas;
     private List<SitioDeInteres> sitios;
+    private BufferedReader turistaCsv;
+    private BufferedReader sitiosCsv;
+    private Path output;
+    private String eleccion;
 
     public ServicioBuscador() {
         this.st = new ServicioTurista();
@@ -31,31 +37,82 @@ public class ServicioBuscador {
         this.sitios = new ArrayList();
     }
 
-    public void buscarSitios(BufferedReader turistaCsv, BufferedReader sitiosCsv) throws IOException {
+    public ServicioBuscador(Path csvTuristas, Path csvSitios, Path output, String eleccion) throws IOException {
+        this();
+        this.turistaCsv = Files.newBufferedReader(csvTuristas, Charset.forName("ISO-8859-1"));
+        this.sitiosCsv = Files.newBufferedReader(csvSitios, Charset.forName("ISO-8859-1"));
+        this.output = output;
+        this.eleccion = eleccion;
+        this.turistas = st.turistasAObjetos(this.turistaCsv);
+        this.sitios = ss.sitiosAObjetos(this.sitiosCsv);
+    }
 
-        this.turistas = st.turistasAObjetos(turistaCsv);
-        this.sitios = ss.sitiosAObjetos(sitiosCsv);
+    public void buscarSitios() throws IOException {
+//
+//        double latA, longA, latB, longB;
+//
+//        for (Turista turista : this.turistas) {
+//            latA = turista.getLatitud();
+//            longA = turista.getLongitud();
+//
+//            for (SitioDeInteres sitio : this.sitios) {
+//
+//                latB = sitio.getLatitud();
+//                longB = sitio.getLongitud();
+//
+//                //sitio.setDistanciaEnKm(this.distanciaAlSitio(latA, longA, latB, longB));
+//                for (String sitioInteresante : turista.getIntereses()) {
+//                    if ((sitioInteresante.equals(sitio.getCategoria())) && (sitio.estaAbierto(turista.getHoraDeConsulta()))) {
+//                        sitio.setDistanciaEnKm(this.distanciaAlSitio(latA, longA, latB, longB));//ESTABA FUERA DEL FOR
+//
+//                        if (sitio.getDistanciaEnKm() <= this.distanciaMaxima) {
+//                            turista.agregarSitioPorVisitar(sitio);
+//                            System.out.println("categoria: " + sitio.getCategoria());
+//                        }
+//                    }
+//                }
+//            }
+//
+//            if (!turista.getSitiosPorVisitar().isEmpty()) {
+//                Collections.sort(turista.getSitiosPorVisitar(), new OrdenarPorDistancia());
+//                log.info("Se han cargado " + turista.getSitiosPorVisitar().size() + " sitio(s) de interés para " + turista.getNombre() + " " + turista.getApellido());
+//            } else {
+//                log.error("No se han encontrado sitios de interés cercanos al turista " + turista.getNombre() + " " + turista.getApellido());
+//            }
+//        }
+    }
+
+    public void buscarNSitios() throws IOException, NumberFormatException {
+
+        int cantidadSitios = Math.abs(Integer.parseInt(this.eleccion)); //Ignoramos el signo
 
         double latA, longA, latB, longB;
 
-        for (Turista turista : turistas) {
+        for (Turista turista : this.turistas) {
             latA = turista.getLatitud();
             longA = turista.getLongitud();
 
-            for (SitioDeInteres sitio : sitios) {
+            for (SitioDeInteres sitio : this.sitios) {
 
                 latB = sitio.getLatitud();
                 longB = sitio.getLongitud();
 
-                sitio.setDistancia(this.distanciaAlSitio(latA, longA, latB, longB));
+                for (String sitioInteresante : turista.getIntereses()) {
+                    if ((sitioInteresante.equals(sitio.getCategoria())) && (sitio.estaAbierto(turista.getHoraDeConsulta()))) {
+                        sitio.setDistanciaEnKm(this.distanciaAlSitio(latA, longA, latB, longB));
 
-                if (turista.getInteres().equals(sitio.getCategoria()) && sitio.getDistancia() <= 100.00 && sitio.estaAbierto(turista.getHoraDeConsulta())) {
-                    turista.agregarSitioPorVisitar(sitio);
+                        if (sitio.getDistanciaEnKm() <= this.distanciaMaxima) {
+                            turista.agregarSitioPorVisitar(sitio);
+                        }
+                    }
                 }
             }
 
             if (!turista.getSitiosPorVisitar().isEmpty()) {
-                Collections.sort(turista.getSitiosPorVisitar(), new OrdenarPorDistancia());
+                Collections.sort(turista.getSitiosPorVisitar(), new OrdenarPorDistancia()); //Ordena la coleccion por cercania
+                List listaReducida = new ArrayList(turista.getSitiosPorVisitar().subList(0, cantidadSitios)); //crea una lista con la cantidad de sitios especificados
+                turista.setSitiosPorVisitar(listaReducida); //setea la nueva coleccion al turista
+                
                 log.info("Se han cargado " + turista.getSitiosPorVisitar().size() + " sitio(s) de interés para " + turista.getNombre() + " " + turista.getApellido());
             } else {
                 log.error("No se han encontrado sitios de interés cercanos al turista " + turista.getNombre() + " " + turista.getApellido());
@@ -63,7 +120,7 @@ public class ServicioBuscador {
         }
     }
 
-    public void escribirTuristaJson(Path output) throws IOException {
+    public void escribirTuristaJson() throws IOException {
         String json = "";
 
         for (Turista turista : this.turistas) {
@@ -73,7 +130,7 @@ public class ServicioBuscador {
             json = objectMapper.writeValueAsString(turista);
 
             log.debug("Tratando de escribir turista: " + turista.getNombre() + " " + turista.getApellido());
-            Files.write(output, (String.join(",", json) + System.lineSeparator()).getBytes(), StandardOpenOption.APPEND);
+            Files.write(this.output, (String.join(",", json) + System.lineSeparator()).getBytes(), StandardOpenOption.APPEND);
 
             log.info("OK. Turista serializado y escrito en archivo.");
         }
@@ -89,6 +146,6 @@ public class ServicioBuscador {
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         double distMi = earthRadius * c;
         double distKm = distMi / 0.62137;
-        return distKm;
+        return Math.round(distKm * 100) / 100d; //Redondea a dos decimales
     }
 }

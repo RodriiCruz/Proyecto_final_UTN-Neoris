@@ -11,6 +11,6 @@ public class OrdenarPorDistancia implements Comparator<SitioDeInteres>{
 
     @Override
     public int compare(SitioDeInteres o1, SitioDeInteres o2) {
-        return (int) (o1.getDistancia() - o2.getDistancia());
+        return (int) (o1.getDistanciaEnKm() - o2.getDistanciaEnKm());
     }
 }

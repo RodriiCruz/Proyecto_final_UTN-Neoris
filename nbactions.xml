@@ -10,7 +10,7 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:3.0.0:exec</goal>
             </goals>
             <properties>
-                <exec.args>-classpath %classpath ar.edu.utn.buscador.Main --sitios Sitios.csv --turistas Turistas.csv --salida Output.txt</exec.args>
+                <exec.args>-classpath %classpath ar.edu.utn.buscador.Main --sitios Sitios.csv --turistas Turistas.csv --salida Output.txt --tipo -2</exec.args>
                 <exec.executable>java</exec.executable>
                 <exec.workingdir>C:\Users\Rodrii\Desktop\NEORIS\ProyectoFinal</exec.workingdir>
             </properties>
@@ -25,7 +25,7 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:3.0.0:exec</goal>
             </goals>
             <properties>
-                <exec.args>-agentlib:jdwp=transport=dt_socket,server=n,address=${jpda.address} -classpath %classpath ar.edu.utn.buscador.Main --sitios Sitios.csv --turistas Turistas.csv --salida Output.txt</exec.args>
+                <exec.args>-agentlib:jdwp=transport=dt_socket,server=n,address=${jpda.address} -classpath %classpath ar.edu.utn.buscador.Main --sitios Sitios.csv --turistas Turistas.csv --salida Output.txt --tipo -2</exec.args>
                 <exec.executable>java</exec.executable>
                 <jpda.listen>true</jpda.listen>
                 <exec.workingdir>C:\Users\Rodrii\Desktop\NEORIS\ProyectoFinal</exec.workingdir>
@@ -41,7 +41,7 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:3.0.0:exec</goal>
             </goals>
             <properties>
-                <exec.args>-classpath %classpath ar.edu.utn.buscador.Main --sitios Sitios.csv --turistas Turistas.csv --salida Output.txt</exec.args>
+                <exec.args>-classpath %classpath ar.edu.utn.buscador.Main --sitios Sitios.csv --turistas Turistas.csv --salida Output.txt --tipo -2</exec.args>
                 <exec.executable>java</exec.executable>
                 <exec.workingdir>C:\Users\Rodrii\Desktop\NEORIS\ProyectoFinal</exec.workingdir>
             </properties>

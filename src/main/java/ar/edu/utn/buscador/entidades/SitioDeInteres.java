@@ -17,7 +17,7 @@ public class SitioDeInteres {
     private Double longitud;
     private Integer horaDeApertura;
     private Integer horaDeCierre;
-    private Double distancia;
+    private Double distanciaEnKm;
 
     public String getNombre() {
         return nombre;
@@ -91,12 +91,12 @@ public class SitioDeInteres {
         this.horaDeCierre = horaDeCierre;
     }
 
-    public Double getDistancia() {
-        return distancia;
+    public Double getDistanciaEnKm() {
+        return this.distanciaEnKm;
     }
 
-    public void setDistancia(Double distancia) {
-        this.distancia = distancia;
+    public void setDistanciaEnKm(Double distancia) {
+        this.distanciaEnKm = distancia;
     }
 
     public boolean estaAbierto(int hora) {

@@ -12,7 +12,7 @@ public class Turista {
 
     @JsonIgnore
     private Character sexo;
-    private String interes;
+    private List<String> intereses;
 
     @JsonIgnore
     private Double latitud;
@@ -24,6 +24,7 @@ public class Turista {
 
     public Turista() {
         this.sitiosPorVisitar = new ArrayList();
+        this.intereses = new ArrayList();
     }
 
     public Long getDni() {
@@ -58,12 +59,12 @@ public class Turista {
         this.sexo = sexo;
     }
 
-    public String getInteres() {
-        return interes;
+    public List<String> getIntereses() {
+        return intereses;
     }
 
-    public void setInteres(String interes) {
-        this.interes = interes;
+    public void setIntereses(List<String> intereses) {
+        this.intereses = intereses;
     }
 
     public Double getLatitud() {
@@ -92,6 +93,10 @@ public class Turista {
 
     public List<SitioDeInteres> getSitiosPorVisitar() {
         return sitiosPorVisitar;
+    }
+
+    public void setSitiosPorVisitar(List<SitioDeInteres> sitiosPorVisitar) {
+        this.sitiosPorVisitar = sitiosPorVisitar;
     }
 
     public void agregarSitioPorVisitar(SitioDeInteres sitio) {

@@ -22,8 +22,6 @@ public class Main {
 
     public static void main(String[] args) {
 
-        ServicioBuscador servicio = new ServicioBuscador();
-
         ArgumentParser parser = ArgumentParsers.newFor("csvParser").build()
                 .description("Cruza dos archivos csv y devuelve la información combinada");
         parser.addArgument("--turistas")
@@ -32,6 +30,9 @@ public class Main {
         parser.addArgument("--sitios")
                 .type(String.class).required(true)
                 .help("Listado de sitios de interes");
+        parser.addArgument("--tipo")
+                .type(String.class).setDefault("intereses")
+                .help("Tipo de seleccion de datos");
         parser.addArgument("--salida")
                 .type(String.class).required(true)
                 .help("Ruta del archivo de salida");
@@ -50,6 +51,7 @@ public class Main {
             Path csvTuristas = Paths.get(res.getString("turistas"));
             Path csvSitios = Paths.get(res.getString("sitios"));
             Path output = Paths.get(res.getString("salida"));
+            String eleccion = res.getString("tipo");
 
             BufferedReader brTuristas = Files.newBufferedReader(csvTuristas, Charset.forName("ISO-8859-1"));
             BufferedReader brSitios = Files.newBufferedReader(csvSitios, Charset.forName("ISO-8859-1"));
@@ -60,13 +62,26 @@ public class Main {
 
             try {
 
-                servicio.buscarSitios(brTuristas, brSitios);
+                ServicioBuscador servicio = new ServicioBuscador(csvTuristas, csvSitios, output, eleccion);
 
-                servicio.escribirTuristaJson(output);
+                if (eleccion.equals("intereses")) {
+                    servicio.buscarSitios();
+                } else {
+                    servicio.buscarNSitios();
+                }
+
+                servicio.escribirTuristaJson();
 
                 log.info("OK. El archivo " + output.toAbsolutePath() + " se ha escrito correctamente.");
+            } catch (NumberFormatException e) {
+                log.error("ERROR. En --tipo debe ingresar un número entero válido, o el string \"intereses\". \n"
+                        + "(se ingresó: " + eleccion + ")");
+                System.err.println("ERROR. En --tipo debe ingresar un número entero válido, o el string \"intereses\". \n"
+                        + "(se ingresó: " + eleccion + ")");
+                System.exit(1);
             } catch (Exception e) {
                 log.error("ERROR. " + Arrays.toString(e.getStackTrace()));
+                System.exit(1);
             } finally {
                 brTuristas.close();
                 brSitios.close();
