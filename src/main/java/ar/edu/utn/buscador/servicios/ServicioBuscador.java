@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 public class ServicioBuscador {
 
     final static Logger log = LoggerFactory.getLogger(ServicioBuscador.class);
-    final Double distanciaMaxima = 100.00;
+    final Double distanciaMaxima = 1000.00;
 
     private List<Turista> turistas;
     private List<SitioDeInteres> sitios;
@@ -26,6 +26,9 @@ public class ServicioBuscador {
     private BufferedReader brSitios;
     private Path output;
     private String eleccion;
+
+    public ServicioBuscador() {
+    }
 
     public ServicioBuscador(BufferedReader brTuristas, BufferedReader brSitios, Path output, String eleccion) throws IOException {
         this.brTuristas = brTuristas;
@@ -35,6 +38,19 @@ public class ServicioBuscador {
         this.turistas = new ServicioTurista().turistasAObjetos(this.brTuristas);
         this.sitios = new ServicioSitio().sitiosAObjetos(this.brSitios);
     }
+    
+    public ServicioBuscador(List<Turista> listaTurista, List<SitioDeInteres> listaSitio, String opcion)
+    {
+        turistas = listaTurista;
+        sitios = listaSitio;
+        eleccion = opcion;
+    }
+
+    public List<Turista> getTuristas() {
+        return turistas;
+    }
+    
+    
 
     public void buscarSitios() throws IOException {
         log.info("Se buscará el primer sitio, de cada categoria de interes, que cumpla los filtros establecidos...");
@@ -106,8 +122,11 @@ public class ServicioBuscador {
 
             if (!turista.getSitiosPorVisitar().isEmpty()) {
                 Collections.sort(turista.getSitiosPorVisitar(), new OrdenarPorDistancia()); //Ordena la coleccion por cercania
-                List listaReducida = new ArrayList(turista.getSitiosPorVisitar().subList(0, cantidadSitios)); //crea una lista con la cantidad de sitios especificados
-                turista.setSitiosPorVisitar(listaReducida); //setea la nueva coleccion al turista
+                if(turista.getSitiosPorVisitar().size()>cantidadSitios)
+                {
+                    List listaReducida = new ArrayList(turista.getSitiosPorVisitar().subList(0, cantidadSitios)); //crea una lista con la cantidad de sitios especificados
+                    turista.setSitiosPorVisitar(listaReducida); //setea la nueva coleccion al turista
+                }
 
                 log.info("Se han cargado " + turista.getSitiosPorVisitar().size() + " sitio(s) de interés para " + turista.getNombre() + " " + turista.getApellido());
             } else {

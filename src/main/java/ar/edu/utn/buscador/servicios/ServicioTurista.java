@@ -1,12 +1,7 @@
 package ar.edu.utn.buscador.servicios;
-
 import ar.edu.utn.buscador.entidades.Turista;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -48,21 +43,5 @@ public class ServicioTurista {
             }
         }
         return turistas;
-    }
-
-    public void escribirTuristaJson(Path output, List<Turista> turistas) throws IOException {
-        String json = "";
-
-        for (Turista turista : turistas) {
-            ObjectMapper objectMapper = new ObjectMapper();
-
-            log.debug("Tratando de serializar turista: " + turista.getNombre() + " " + turista.getApellido());
-            json = objectMapper.writeValueAsString(turista);
-
-            log.debug("Tratando de escribir turista: " + turista.getNombre() + " " + turista.getApellido());
-            Files.write(output, (String.join(",", json) + System.lineSeparator()).getBytes(), StandardOpenOption.APPEND);
-
-            log.info("OK. Turista serializado y escrito en archivo.");
-        }
     }
 }
