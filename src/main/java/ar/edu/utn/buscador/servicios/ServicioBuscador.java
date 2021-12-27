@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 public class ServicioBuscador {
 
     final static Logger log = LoggerFactory.getLogger(ServicioBuscador.class);
-    final Double distanciaMaxima = 1000.00;
+    final Double distanciaMaxima = 100.00;
 
     private List<Turista> turistas;
     private List<SitioDeInteres> sitios;
@@ -63,6 +63,7 @@ public class ServicioBuscador {
             longA = turista.getLongitud();
 
             for (String sitioInteresante : turista.getIntereses()) {
+                aux.clear(); //Borra los elementos del listado antes de empezar a buscar coincidencia de intereses
 
                 for (SitioDeInteres sitio : this.sitios) {
 
