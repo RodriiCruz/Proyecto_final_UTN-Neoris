@@ -3,18 +3,9 @@ package ar.edu.utn.buscador.servicios;
 import ar.edu.utn.buscador.entidades.SitioDeInteres;
 import ar.edu.utn.buscador.entidades.Turista;
 import org.junit.Test;
-import static org.junit.Assert.*;
-import ar.edu.utn.buscador.servicios.ServicioBuscador;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import junit.framework.Assert;
 import org.junit.Before;
 
@@ -86,7 +77,7 @@ public class ServicioBuscadorTest {
         sitiosInteres.add(tercerSitio);
         sitiosInteres.add(cuartoSitio);
 
-        String opcion = "3";
+        Integer opcion = 3;
 
         servi = new ServicioBuscador(listaTurista, sitiosInteres, opcion);
     }

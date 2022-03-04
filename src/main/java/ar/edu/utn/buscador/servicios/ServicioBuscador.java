@@ -25,12 +25,12 @@ public class ServicioBuscador {
     private BufferedReader brTuristas;
     private BufferedReader brSitios;
     private Path output;
-    private String eleccion;
+    private Integer eleccion;
 
     public ServicioBuscador() {
     }
 
-    public ServicioBuscador(BufferedReader brTuristas, BufferedReader brSitios, Path output, String eleccion) throws IOException {
+    public ServicioBuscador(BufferedReader brTuristas, BufferedReader brSitios, Path output, Integer eleccion) throws IOException {
         this.brTuristas = brTuristas;
         this.brSitios = brSitios;
         this.output = output;
@@ -38,9 +38,8 @@ public class ServicioBuscador {
         this.turistas = new ServicioTurista().turistasAObjetos(this.brTuristas);
         this.sitios = new ServicioSitio().sitiosAObjetos(this.brSitios);
     }
-    
-    public ServicioBuscador(List<Turista> listaTurista, List<SitioDeInteres> listaSitio, String opcion)
-    {
+
+    public ServicioBuscador(List<Turista> listaTurista, List<SitioDeInteres> listaSitio, Integer opcion) {
         turistas = listaTurista;
         sitios = listaSitio;
         eleccion = opcion;
@@ -49,8 +48,6 @@ public class ServicioBuscador {
     public List<Turista> getTuristas() {
         return turistas;
     }
-    
-    
 
     public void buscarSitios() throws IOException {
         log.info("Se buscará el primer sitio, de cada categoria de interes, que cumpla los filtros establecidos...");
@@ -96,7 +93,7 @@ public class ServicioBuscador {
 
     public void buscarNSitios() throws IOException, NumberFormatException {
 
-        int cantidadSitios = Math.abs(Integer.parseInt(this.eleccion)); //Ignoramos el signo
+        int cantidadSitios = Math.abs(this.eleccion); //Ignoramos el signo
         log.info("Se buscarán " + cantidadSitios + " primeros sitios que cumplan los filtros establecidos...");
 
         double latA, longA, latB, longB;
@@ -123,8 +120,7 @@ public class ServicioBuscador {
 
             if (!turista.getSitiosPorVisitar().isEmpty()) {
                 Collections.sort(turista.getSitiosPorVisitar(), new OrdenarPorDistancia()); //Ordena la coleccion por cercania
-                if(turista.getSitiosPorVisitar().size()>cantidadSitios)
-                {
+                if (turista.getSitiosPorVisitar().size() > cantidadSitios) {
                     List listaReducida = new ArrayList(turista.getSitiosPorVisitar().subList(0, cantidadSitios)); //crea una lista con la cantidad de sitios especificados
                     turista.setSitiosPorVisitar(listaReducida); //setea la nueva coleccion al turista
                 }

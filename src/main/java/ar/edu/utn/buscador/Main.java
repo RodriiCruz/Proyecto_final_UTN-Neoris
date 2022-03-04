@@ -30,8 +30,8 @@ public class Main {
         parser.addArgument("--sitios")
                 .type(String.class).required(true)
                 .help("Listado de sitios de interes");
-        parser.addArgument("--tipo")
-                .type(String.class).setDefault("intereses")
+        parser.addArgument("--cantidad")
+                .type(Integer.class).setDefault(0)
                 .help("Tipo de seleccion de datos");
         parser.addArgument("--salida")
                 .type(String.class).required(true)
@@ -51,7 +51,7 @@ public class Main {
             Path csvTuristas = Paths.get(res.getString("turistas"));
             Path csvSitios = Paths.get(res.getString("sitios"));
             Path output = Paths.get(res.getString("salida"));
-            String eleccion = res.getString("tipo");
+            Integer eleccion = res.getInt("cantidad");
 
             BufferedReader brTuristas = Files.newBufferedReader(csvTuristas, Charset.forName("ISO-8859-1"));
             BufferedReader brSitios = Files.newBufferedReader(csvSitios, Charset.forName("ISO-8859-1"));
@@ -63,7 +63,7 @@ public class Main {
             try {
                 ServicioBuscador servicio = new ServicioBuscador(brTuristas, brSitios, output, eleccion);
 
-                if (eleccion.equals("intereses")) {
+                if (eleccion == 0) {
                     servicio.buscarSitios();
                 } else {
                     servicio.buscarNSitios();
@@ -73,9 +73,9 @@ public class Main {
 
                 log.info("OK. El archivo " + output.toAbsolutePath() + " se ha escrito correctamente.");
             } catch (NumberFormatException e) {
-                log.error("ERROR. En --tipo debe ingresar un número entero válido, o el string \"intereses\". \n"
+                log.error("ERROR. En --cantidad debe ingresar un número entero válido. \n"
                         + "(se ingresó: " + eleccion + ")");
-                System.err.println("ERROR. En --tipo debe ingresar un número entero válido, o el string \"intereses\". \n"
+                System.err.println("ERROR. En --cantidad debe ingresar un número entero válido. \n"
                         + "(se ingresó: " + eleccion + ")");
                 System.exit(1);
             } catch (Exception e) {
